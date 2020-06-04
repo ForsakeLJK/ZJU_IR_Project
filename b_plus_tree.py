@@ -139,8 +139,32 @@ class BPTree:
             self.root = upperNode
         # index nodes, not root
         else:
-            pass
+            parentNode = node.parent
+            parentNode.children.remove(node)
 
+            # Note: the midian will be lifted up
+            leftKeys = node.key[0:MEDIAN_INDEX]
+            rightKeys = node.key[(MEDIAN_INDEX+1):]
+            leftChildren = node.children[0:(MEDIAN_INDEX+1)]
+            rightChildren = node.children[(MEDIAN_INDEX+1):]
+
+            leftNode = TreeNode(children=leftChildren, keys=leftKeys)
+            rightNode = TreeNode(children=rightChildren, keys=rightKeys)
+
+            # reset parents for their children
+            for child in leftNode.children:
+                child.parent = leftNode
+            for child in rightNode.children:
+                child.parent = rightNode
+            
+            parentNode.addChild(rightNode)
+            parentNode.addChild(leftNode)
+
+            leftNode.parent = parentNode
+            rightNode.parent = parentNode
+
+            if not parentNode.addKey(node.key[MEDIAN_INDEX]):
+                self.split(parentNode)
 
     def search(self, key):
 
