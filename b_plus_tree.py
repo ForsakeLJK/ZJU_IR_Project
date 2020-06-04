@@ -111,13 +111,33 @@ class BPTree:
                     self.split(parentNode)
         # root but not leaf  
         elif node.isRoot:
-            pass
-            # leftKeys = node.key[0:MEDIAN_INDEX]
-            # rightKeys = node.key[MEDIAN_INDEX:]
-            # leftChildren = node.key
-            # # two new index nodes
-            # leftNode = TreeNode(children=[], isLeaf=True, keys=leftKeys)
-            # rightNode = TreeNode(children=[], isLeaf=True, keys=rightKeys)
+            # Note: the midian will be lifted up
+            upperKeys = [node.key[MEDIAN_INDEX]]
+
+            leftKeys = node.key[0:MEDIAN_INDEX]
+            rightKeys = node.key[(MEDIAN_INDEX+1):]
+            leftChildren = node.children[0:(MEDIAN_INDEX+1)]
+            rightChildren = node.children[(MEDIAN_INDEX+1):]
+
+            leftNode = TreeNode(children=leftChildren, keys=leftKeys)
+            rightNode = TreeNode(children=rightChildren, keys=rightKeys)
+            
+            # reset parents for their children
+            for child in leftNode.children:
+                child.parent = leftNode
+            for child in rightNode.children:
+                child.parent = rightNode
+
+            # new root
+            upperNode = TreeNode(isRoot=True, children=[], keys=upperKeys)
+            upperNode.addChild(leftNode)
+            upperNode.addChild(rightNode)
+
+            leftNode.parent = upperNode
+            rightNode.parent = upperNode
+
+            self.root = upperNode
+        # index nodes, not root
         else:
             pass
 
