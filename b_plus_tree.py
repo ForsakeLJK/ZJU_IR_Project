@@ -1,7 +1,7 @@
 '''
 A B+ tree internal node (a.k.a. index node) except root should have number of children in range [order/2, order]
 Correspondingly, each node should have [(order-1)/2, order-1] keys, but only leaf nodes contain all keys.
-Also, in a B+ tree, all leaf nodes form a linked list. 
+Also, in a B+ tree, all leaf nodes form a (double) linked list. 
 '''
 ORDER = 4
 # right-biased median here, e.g., in [1, 2, 3, 4], 3 (with index 2) will be choosed as median
