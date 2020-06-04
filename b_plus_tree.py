@@ -250,15 +250,63 @@ class BPTree:
 
         return result
 
+
+    def noEndLimitQuery(self, start):
+        node = self.root
+        # find the proper leaf
+        while not node.isLeaf:
+            for i in range(len(node.key)):
+                if start < node.key[i]:
+                    node = node.children[i]
+                    break
+                # the last key is still smaller, go to the last child
+                elif i == len(node.key) - 1 and start >= node.key[i]:
+                    node = node.children[i+1]
+                    break
+                elif start >= node.key[i]:
+                    continue
+
+        if start < node.key[-1] or start in node.key:
+            pass
+        elif start > node.key[-1] and node.nextLeaf != None:
+            node = node.nextLeaf
+        else:
+            return None
+
+        result = []
+
+        # first leaf to check, so k might be smaller than start
+        for k in node.key:
+            if k >= start:
+                result.append(k)
+            elif k < start:
+                continue
+
+        # all vals in leaf is small
+        if len(result) == 0:
+            return None
+
+        while node.nextLeaf != None:
+            # go to next leaf
+            node = node.nextLeaf
+
+            for k in node.key:
+                # it must be larger than start now
+                result.append(k)
+
+        return result
+
     def rangeQuery(self, start, end):
         #TODO:
-        # fetch all
-        if start == '' and end == '':
-            pass
-        # start to the last one
-        elif end == '':
-            pass
-            
+        if start >= end and end != '':
+            print("start should be smaller than end if end is not ''!\n")
+            return None
+        
+        # fetch all or from start to the last one
+        # prefix with no limit
+        if end == '':
+            return self.noEndLimitQuery(start)
+
         # now here is the general case [start, end]. 
         # note that start can be "" because it must be the smallest word
         # in fact, in this case, range query is just a pseudo prefix search
