@@ -158,6 +158,7 @@ def printNode(node):
         [id(child) for child in node.children],
         node.isLeaf, node.isRoot, nextLeaf, prevLeaf))
 
+    print("------------------------------------------------")
 
     for child in node.children:
         printNode(child)
