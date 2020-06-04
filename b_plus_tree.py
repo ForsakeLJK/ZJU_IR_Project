@@ -250,8 +250,20 @@ class BPTree:
 
         return result
 
-    def rangeQuery(self, low, high):
+    def rangeQuery(self, start, end):
         #TODO:
+        # fetch all
+        if start == '' and end == '':
+            pass
+        # start to the last one
+        elif end == '':
+            pass
+            
+        # now here is the general case [start, end]. 
+        # note that start can be "" because it must be the smallest word
+        # in fact, in this case, range query is just a pseudo prefix search
+        # with constraint 'end' rather than nextWord(prefix) 
+        
         return True
 
     # a preorder print
@@ -296,7 +308,7 @@ def printNode(node):
 def nextWord(s):
 
     # If string is empty.
-    if (s == " "):
+    if (s == " " or s == ""):
         return "a"
 
     # Find first character from right
