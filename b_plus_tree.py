@@ -191,10 +191,66 @@ class BPTree:
 
     def prefixSearch(self, prefix):
 
-        return True
+        node = self.root
+
+        # find the proper leaf
+        while not node.isLeaf:
+            for i in range(len(node.key)):
+                if prefix < node.key[i]:
+                    node = node.children[i]
+                    break
+                # the last key is still smaller, go to the last child
+                elif i == len(node.key) - 1 and prefix >= node.key[i]:
+                    node = node.children[i+1]
+                    break  
+                elif prefix >= node.key[i]:
+                    continue
+
+        if prefix < node.key[-1] or prefix in node.key:
+            pass
+        elif prefix > node.key[-1] and node.nextLeaf != None:
+            node = node.nextLeaf
+        else:
+            return None
+
+        result = []
+        NextLeafNeeded = False
+
+        # first leaf to check, so k might be smaller than prefix
+        for k in node.key:
+            if k >= prefix and k < 'toq':
+                result.append(k)
+                NextLeafNeeded = True
+            elif k < prefix:
+                continue
+            else:
+                NextLeafNeeded = False
+                break
+
+        # all vals in leaf is small
+        if (not NextLeafNeeded) and len(result) == 0:
+            return None
+        # noly in this leaf
+        elif not NextLeafNeeded:
+            return result
+
+        while NextLeafNeeded and node.nextLeaf != None:
+            # go to next leaf
+            node = node.nextLeaf
+
+            for k in node.key:
+                # it must be larger than prefix now
+                if k < 'toq':
+                    result.append(k)
+                    NextLeafNeeded = True
+                else:
+                    NextLeafNeeded = False
+                    break
+
+        return result
 
     def rangeQuery(self, low, high):
-
+        #TODO:
         return True
 
     # a preorder print
@@ -234,3 +290,7 @@ def printNode(node):
 
     for child in node.children:
         printNode(child)
+
+def nextStr(str):
+    #TODO
+    return None
