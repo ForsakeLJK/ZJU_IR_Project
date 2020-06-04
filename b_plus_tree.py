@@ -12,7 +12,7 @@ MEDIAN_INDEX = (ORDER-1) // 2 + 1
 class TreeNode:
 
     def __init__(self, keys, children, isRoot=False, 
-                 isLeaf=False, nextLeaf=None, 
+                 isLeaf=False, nextLeaf=None, prevLeaf=None,
                  parent=None):
         
         keys.sort()
@@ -21,6 +21,7 @@ class TreeNode:
         self.isLeaf = isLeaf
         self.isRoot = isRoot
         self.nextLeaf = nextLeaf
+        self.prevLeaf = prevLeaf
         self.parent = parent
 
     def addKey(self, key):
@@ -83,6 +84,12 @@ class BPTree:
             rightNode = TreeNode(children=[], isLeaf=True, keys=rightKeys)
             leftNode.nextLeaf = rightNode
             rightNode.nextLeaf = node.nextLeaf
+            leftNode.prevLeaf = node.prevLeaf
+            rightNode.prevLeaf = leftNode
+            if leftNode.prevLeaf != None:
+                leftNode.prevLeaf.nextLeaf = leftNode
+            if rightNode.nextLeaf != None:
+                rightNode.nextLeaf.prevLeaf = rightNode
             # no parent, i.e., it's root
             if node.parent == None:
                 parentNode = TreeNode(isRoot=True, keys=[node.key[MEDIAN_INDEX]], children=[])
@@ -101,7 +108,16 @@ class BPTree:
                 rightNode.parent = parentNode
                 # split parent also if it's full
                 if not parentNode.addKey(node.key[MEDIAN_INDEX]):
-                    self.split(parentNode)  
+                    self.split(parentNode)
+        # root but not leaf  
+        elif node.isRoot:
+            pass
+            # leftKeys = node.key[0:MEDIAN_INDEX]
+            # rightKeys = node.key[MEDIAN_INDEX:]
+            # leftChildren = node.key
+            # # two new index nodes
+            # leftNode = TreeNode(children=[], isLeaf=True, keys=leftKeys)
+            # rightNode = TreeNode(children=[], isLeaf=True, keys=rightKeys)
         else:
             pass
 
@@ -133,10 +149,14 @@ def printNode(node):
     if nextLeaf != None:
         nextLeaf = id(node.nextLeaf)
 
-    print("node id:{}, keys:{}, parent:{}, children:{}, isLeaf:{}, isRoot:{}, nextLeaf:{}".format(
+    prevLeaf = node.prevLeaf
+    if prevLeaf != None:
+        prevLeaf = id(node.prevLeaf)
+
+    print("node id:{}, keys:{}, parent:{},\n children:{},\n isLeaf:{}, isRoot:{}, nextLeaf:{}, prevLeaf: {}".format(
         id(node), node.key, parent,
         [id(child) for child in node.children],
-        node.isLeaf, node.isRoot, nextLeaf))
+        node.isLeaf, node.isRoot, nextLeaf, prevLeaf))
 
 
     for child in node.children:
