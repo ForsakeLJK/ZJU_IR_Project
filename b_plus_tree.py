@@ -8,18 +8,11 @@ ORDER = 4
 # if order is even, no bias is needed.
 MEDIAN_INDEX = (ORDER-1) // 2 + 1
 
-def childNodeCmp(node1, node2):
-    if node1.key[0] < node2.key[0]:
-        return -1
-    elif node1.key[0] > node2.key[1]:
-        return 1
-    else:
-        return 0
 
 class TreeNode:
 
-    def __init__(self, isRoot=False, isLeaf=False, 
-                 keys=[], children=[], nextLeaf=None, 
+    def __init__(self, keys, children, isRoot=False, 
+                 isLeaf=False, nextLeaf=None, 
                  parent=None):
         
         keys.sort()
@@ -43,7 +36,7 @@ class TreeNode:
     def addChild(self, node):
 
         self.children.append(node)
-        self.children.sort(key=childNodeCmp)
+        self.children.sort(key=lambda child: child.key[0])
     
     def isFull(self):
         if len(self.key) > ORDER-1:
@@ -56,7 +49,7 @@ class BPTree:
 
     def __init__(self):
 
-        self.root = TreeNode(isRoot=True, isLeaf=True)
+        self.root = TreeNode(keys=[], children=[], isRoot=True, isLeaf=True)
 
     def insert(self, key):
         
@@ -84,18 +77,18 @@ class BPTree:
             leftKeys = node.key[0:MEDIAN_INDEX]
             rightKeys = node.key[MEDIAN_INDEX:]
             # two new leaves
-            leftNode = TreeNode(isLeaf=True, keys=leftKeys)
-            rightNode = TreeNode(isLeaf=True, keys=rightKeys)
+            leftNode = TreeNode(children=[], isLeaf=True, keys=leftKeys)
+            rightNode = TreeNode(children=[], isLeaf=True, keys=rightKeys)
             leftNode.nextLeaf = rightNode
             # no parent
             if node.isRoot:
-                parentNode = TreeNode(isRoot=True, keys=[node.key[MEDIAN_INDEX]], children=[leftNode, rightNode])
-                leftNode.parent = parentNode
-                rightNode.parent = parentNode
+                parentNode = TreeNode(isRoot=True, keys=[node.key[MEDIAN_INDEX]], children=[])
+                parentNode.addChild(rightNode)
+                parentNode.addChild(leftNode)
                 self.root = parentNode
             # parent exists
             else:
-                
+                pass    
         else:
             pass
 
