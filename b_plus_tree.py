@@ -8,7 +8,6 @@ ORDER = 4
 # if order is even, no bias is needed.
 MEDIAN_INDEX = (ORDER-1) // 2 + 1
 
-
 class TreeNode:
 
     def __init__(self, keys, children, isRoot=False, 
@@ -216,9 +215,11 @@ class BPTree:
         result = []
         NextLeafNeeded = False
 
+        prefix_next = nextWord(prefix)
+
         # first leaf to check, so k might be smaller than prefix
         for k in node.key:
-            if k >= prefix and k < 'toq':
+            if k >= prefix and k < prefix_next:
                 result.append(k)
                 NextLeafNeeded = True
             elif k < prefix:
@@ -240,7 +241,7 @@ class BPTree:
 
             for k in node.key:
                 # it must be larger than prefix now
-                if k < 'toq':
+                if k < prefix_next:
                     result.append(k)
                     NextLeafNeeded = True
                 else:
@@ -291,6 +292,26 @@ def printNode(node):
     for child in node.children:
         printNode(child)
 
-def nextStr(str):
-    #TODO
-    return None
+
+def nextWord(s):
+
+    # If string is empty.
+    if (s == " "):
+        return "a"
+
+    # Find first character from right
+    # which is not z.
+    i = len(s) - 1
+    while (s[i] == 'z' and i >= 0):
+        i -= 1
+
+    # If all characters are 'z', append
+    # an 'a' at the end.
+    if (i == -1):
+        s = s + 'a'
+
+    # If there are some non-z characters
+    else:
+        s = s.replace(s[i], chr(ord(s[i]) + 1), 1)
+
+    return s
