@@ -184,6 +184,15 @@ class BPTree:
         printNode(node)
 
 
+def createBPTree(valList):
+    
+    tree = BPTree()
+    for val in valList:
+        tree.insert(val)
+    
+    return tree
+
+
 def printNode(node):
     parent = node.parent
     if parent != None:
