@@ -264,7 +264,63 @@ class BPTree:
         # in fact, in this case, range query is just a pseudo prefix search
         # with constraint 'end' rather than nextWord(prefix) 
         
-        return True
+        node = self.root
+
+        # find the proper leaf
+        while not node.isLeaf:
+            for i in range(len(node.key)):
+                if start < node.key[i]:
+                    node = node.children[i]
+                    break
+                # the last key is still smaller, go to the last child
+                elif i == len(node.key) - 1 and start >= node.key[i]:
+                    node = node.children[i+1]
+                    break
+                elif start >= node.key[i]:
+                    continue
+
+        if start < node.key[-1] or start in node.key:
+            pass
+        elif start > node.key[-1] and node.nextLeaf != None:
+            node = node.nextLeaf
+        else:
+            return None
+
+        result = []
+        NextLeafNeeded = False
+
+        # first leaf to check, so k might be smaller than start
+        for k in node.key:
+            if k >= start and k < end:
+                result.append(k)
+                NextLeafNeeded = True
+            elif k < start:
+                continue
+            else:
+                NextLeafNeeded = False
+                break
+
+        # all vals in leaf is small
+        if (not NextLeafNeeded) and len(result) == 0:
+            return None
+        # noly in this leaf
+        elif not NextLeafNeeded:
+            return result
+
+        while NextLeafNeeded and node.nextLeaf != None:
+            # go to next leaf
+            node = node.nextLeaf
+
+            for k in node.key:
+                # it must be larger than start now
+                if k < end:
+                    result.append(k)
+                    NextLeafNeeded = True
+                else:
+                    NextLeafNeeded = False
+                    break
+
+        return result
 
     # a preorder print
     def printTree(self):
