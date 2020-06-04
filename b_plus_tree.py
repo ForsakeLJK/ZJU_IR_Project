@@ -168,7 +168,26 @@ class BPTree:
 
     def search(self, key):
 
-        return True
+        node = self.root
+
+        # find the proper leaf
+        while not node.isLeaf:
+            for i in range(len(node.key)):
+                if key < node.key[i]:
+                    node = node.children[i]
+                    break
+                # the last key is still smaller, go to the last child
+                elif i == len(node.key) - 1 and key >= node.key[i]:
+                    node = node.children[i+1]
+                    break  
+                elif key >= node.key[i]:
+                    continue
+        
+        for k in node.key:
+            if key == k:
+                return True
+
+        return False
 
     def prefixSearch(self, prefix):
 
@@ -185,7 +204,7 @@ class BPTree:
 
 
 def createBPTree(valList):
-    
+
     tree = BPTree()
     for val in valList:
         tree.insert(val)
