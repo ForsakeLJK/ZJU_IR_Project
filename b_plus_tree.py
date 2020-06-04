@@ -312,6 +312,8 @@ def nextWord(s):
 
     # If there are some non-z characters
     else:
-        s = s.replace(s[i], chr(ord(s[i]) + 1), 1)
+        s = list(s)
+        s[i] = chr(ord(s[i]) + 1)
+        s = "".join(s)
 
     return s
