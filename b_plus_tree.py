@@ -61,8 +61,10 @@ class BPTree:
                 # the last key is still smaller, go to the last child
                 if key < node.key[i]:
                     node = node.children[i]
+                    break
                 elif i == len(node.key) - 1 and key >= node.key[i]:
-                    node = node.children[i+1]  
+                    node = node.children[i+1]
+                    break  
                 elif key >= node.key[i]:
                     continue
         
@@ -80,15 +82,26 @@ class BPTree:
             leftNode = TreeNode(children=[], isLeaf=True, keys=leftKeys)
             rightNode = TreeNode(children=[], isLeaf=True, keys=rightKeys)
             leftNode.nextLeaf = rightNode
-            # no parent
-            if node.isRoot:
+            rightNode.nextLeaf = node.nextLeaf
+            # no parent, i.e., it's root
+            if node.parent == None:
                 parentNode = TreeNode(isRoot=True, keys=[node.key[MEDIAN_INDEX]], children=[])
                 parentNode.addChild(rightNode)
                 parentNode.addChild(leftNode)
+                leftNode.parent = parentNode
+                rightNode.parent = parentNode
                 self.root = parentNode
             # parent exists
             else:
-                pass    
+                parentNode = node.parent
+                parentNode.children.remove(node)
+                parentNode.addChild(rightNode)
+                parentNode.addChild(leftNode)
+                leftNode.parent = parentNode
+                rightNode.parent = parentNode
+                # split parent also if it's full
+                if not parentNode.addKey(node.key[MEDIAN_INDEX]):
+                    self.split(parentNode)  
         else:
             pass
 
