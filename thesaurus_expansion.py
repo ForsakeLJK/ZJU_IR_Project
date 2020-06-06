@@ -48,7 +48,7 @@ def createThesaurusDict(wordList):
 
     coMat = getCoMat(wordList)
     corrMat = getCorrMat(coMat)
-    print(corrMat)
+    # print(corrMat)
 
     # wordCnt-by-(wordCnt-1)
     thesarusMat = np.argsort(-corrMat, axis=1)[:, 1:]
