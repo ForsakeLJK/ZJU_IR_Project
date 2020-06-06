@@ -297,7 +297,7 @@ class BPTree:
         return result
 
     def rangeQuery(self, start, end):
-        #TODO:
+
         if start >= end and end != '':
             print("start should be smaller than end if end is not ''!\n")
             return None
