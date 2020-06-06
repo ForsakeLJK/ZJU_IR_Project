@@ -44,8 +44,13 @@ def corrCalc(vec1, vec2):
 
     return correlation    
 
-def createThesarusDict(wordList):
+def createThesaurusDict(wordList):
 
     coMat = getCoMat(wordList)
     corrMat = getCorrMat(coMat)
+    print(corrMat)
 
+    # wordCnt-by-(wordCnt-1)
+    thesarusMat = np.argsort(-corrMat, axis=1)[:, 1:]
+
+    return thesarusMat
