@@ -54,3 +54,6 @@ def createThesaurusDict(wordList):
     thesarusMat = np.argsort(-corrMat, axis=1)[:, 1:]
 
     return thesarusMat
+
+def saveThesaurusDict(thesarusMat):
+    np.savez_compressed('thesarus_dict', dict=thesarusMat)
