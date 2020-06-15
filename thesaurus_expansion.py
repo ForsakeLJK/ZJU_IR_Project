@@ -4,32 +4,21 @@ import sys
 
 def getCoMat(wordList):
 
-    coMat = []
+    wordList = np.array(wordList)
+    D = np.max(np.max(wordList))
+    N = wordList.shape[0]
 
-    rowCnt = 0
-    colCnt = 0
+    for i in range(N):
+        ncols = len(wordList[i])
+        for j in range(ncols):
+            wordList[i][j] -= 1
 
-    for word in wordList:
-        coMatEntry = []
-        colCnt = 0
-        for w in wordList:
-            if colCnt < rowCnt:
-                coCnt = 0
-                coMatEntry.append(coCnt)
-            else:
-                coCnt = 0
-                for doc in word:
-                    if doc in w:
-                        coCnt += 1
-                coMatEntry.append(coCnt)
-            colCnt += 1
-        coMat.append(coMatEntry)
-        if rowCnt != 0 and rowCnt % 10000 == 0:
-            print("10000 rows passed in getCoMat")
-        rowCnt += 1
+    coMat = np.zeros((N, D))
 
-    coMat = np.array(coMat)
-    coMat = np.maximum(coMat, coMat.transpose())
+    for i in range(N):
+        coMat[i, wordList[i]] = 1
+
+    coMat = np.dot(coMat, coMat.T)
 
     print("getCoMat done.")
 
